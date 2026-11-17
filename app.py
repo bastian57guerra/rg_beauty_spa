@@ -1,7 +1,7 @@
 """Sistema de Gestión de Reservas y Venta Remota - RG Beauty Spa (prototipo, Evaluación 3)."""
 import logging
 
-from flask import Flask, render_template, session
+from flask import Flask, render_template
 
 import config
 import db as basedatos
@@ -20,6 +20,15 @@ def fecha_cl(txt):
 
 def hora_cl(txt):
     return str(txt)[11:16]
+
+
+MENSAJES_ERROR = {
+    403: "No tiene permiso para ver esta página.",
+    404: "La página que busca no existe.",
+    405: "Esa acción no está permitida en esta página.",
+    413: "Los datos enviados son demasiado grandes.",
+    429: "Hay demasiadas solicitudes. Espere un momento.",
+}
 
 
 def create_app(configuracion=None):
@@ -48,11 +57,12 @@ def create_app(configuracion=None):
     @app.errorhandler(400)
     @app.errorhandler(403)
     @app.errorhandler(404)
+    @app.errorhandler(405)
+    @app.errorhandler(413)
     @app.errorhandler(429)
     def error_controlado(e):
-        mensajes = {400: "La solicitud no es válida.", 403: "No tiene permiso para ver esta página.",
-                    404: "La página que busca no existe.", 429: "Hay demasiadas solicitudes. Espere un momento."}
-        detalle = e.description if e.code == 400 else mensajes[e.code]
+        # El 400 trae su propio texto (por ejemplo, el aviso de CSRF); los demás usan mensajes fijos.
+        detalle = e.description if e.code == 400 else MENSAJES_ERROR[e.code]
         return render_template("error.html", codigo=e.code, mensaje=detalle), e.code
 
     @app.errorhandler(500)
