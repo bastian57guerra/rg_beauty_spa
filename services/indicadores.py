@@ -8,14 +8,23 @@ from services.reservas import a_fecha
 NOMBRES_DIA = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
 
 
+def _minutos(inicio, fin):
+    return int((fin - inicio).total_seconds() // 60)
+
+
+def _pct(parte, total):
+    return round(100 * parte / total, 1) if total else 0.0
+
+
 def calcular(db, desde, hasta):
+    """Ocupación, cancelaciones, inasistencias y tiempos muertos entre dos fechas (ambas incluidas)."""
     n_prof = db.execute("SELECT COUNT(*) FROM profesionales WHERE activo = 1").fetchone()[0]
     min_dia = (config.HORA_CIERRE - config.HORA_APERTURA) * 60
-    dias = [desde + timedelta(days=i) for i in range((hasta - desde).days + 1)]
-    cuenta_dias = defaultdict(int)
-    for d in dias:
-        if d.weekday() in config.DIAS_ATENCION:
-            cuenta_dias[d.weekday()] += 1
+    cuenta_dias = defaultdict(int)  # cuántos lunes, martes, etc. hay en el rango
+    for i in range((hasta - desde).days + 1):
+        dia = (desde + timedelta(days=i)).weekday()
+        if dia in config.DIAS_ATENCION:
+            cuenta_dias[dia] += 1
     disponibles = sum(cuenta_dias.values()) * n_prof * min_dia
 
     filas = db.execute(
@@ -31,34 +40,32 @@ def calcular(db, desde, hasta):
         elif f["estado"] == "No asistió":
             no_asistio += 1
         else:
-            minutos = int((fin - ini).total_seconds() // 60)
+            minutos = _minutos(ini, fin)
             ocupados += minutos
             por_dia[ini.weekday()] += minutos
             agenda[(f["profesional_id"], ini.date())].append((ini, fin))
 
-    muerto = 0
+    muerto = 0  # minutos libres entre dos atenciones seguidas de la misma profesional el mismo día
     for bloques in agenda.values():
         bloques.sort()
         for (_, fin_a), (ini_b, _) in zip(bloques, bloques[1:]):
-            muerto += max(0, int((ini_b - fin_a).total_seconds() // 60))
-
-    def pct(a, b):
-        return round(100 * a / b, 1) if b else 0.0
+            muerto += max(0, _minutos(fin_a, ini_b))
 
     detalle_dias = []
     for i in config.DIAS_ATENCION:
         disp = cuenta_dias.get(i, 0) * n_prof * min_dia
-        detalle_dias.append({"dia": NOMBRES_DIA[i], "pct": pct(por_dia.get(i, 0), disp), "ocupados": por_dia.get(i, 0)})
+        detalle_dias.append({"dia": NOMBRES_DIA[i], "pct": _pct(por_dia.get(i, 0), disp), "ocupados": por_dia.get(i, 0)})
     return {
         "total_reservas": len(filas), "canceladas": canceladas, "no_asistio": no_asistio,
-        "pct_cancelacion": pct(canceladas, len(filas)),
+        "pct_cancelacion": _pct(canceladas, len(filas)),
         "ocupados_min": ocupados, "disponibles_min": disponibles,
-        "pct_ocupacion": min(100.0, pct(ocupados, disponibles)),
+        "pct_ocupacion": min(100.0, _pct(ocupados, disponibles)),
         "tiempo_muerto_min": muerto, "por_dia": detalle_dias,
     }
 
 
 def ventas(db, desde, hasta, base=None):
+    """Ventas pagadas del período, las hechas fuera de horario, los 5 productos top y la variación vs. 'base'."""
     d0, d1 = desde.strftime("%Y-%m-%d"), hasta.strftime("%Y-%m-%d")
     fila = db.execute(
         "SELECT COUNT(*) AS n, COALESCE(SUM(total), 0) AS total, "
