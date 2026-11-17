@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% from "_macros.html" import horarios_post %}
+{% block titulo %}Reprogramar{% endblock %}
+{% block contenido %}
+<h1>Reprogramar reserva</h1>
+<section class="tarjeta">
+  <p>{{ detalle.cliente }} · {{ detalle.servicio }} con {{ detalle.profesional }}<br>
+     Horario actual: <strong>{{ r.inicio|fecha_cl }} {{ r.inicio|hora_cl }}</strong></p>
+  <form method="get" class="fila">
+    <input type="date" name="fecha" required min="{{ hoy }}" value="{{ dia.isoformat() if dia else '' }}" aria-label="Nueva fecha">
+    <button class="btn" type="submit">Ver horarios</button>
+    <a class="btn btn-claro" href="{{ url_for('panel.agenda', fecha=r.inicio[:10]) }}">Volver</a>
+  </form>
+</section>
+{% if horarios is not none %}
+<section class="tarjeta">
+  <h2>Horarios libres · {{ dia.strftime('%d-%m-%Y') }}</h2>
+  {% if horarios %}{{ horarios_post(horarios, url_for('panel.reserva_reprogramar', rid=r.id), {}) }}
+  {% else %}<p>No hay horarios libres ese día.</p>{% endif %}
+</section>
+{% endif %}
+{% endblock %}

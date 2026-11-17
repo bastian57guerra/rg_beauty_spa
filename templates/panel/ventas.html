@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block titulo %}Ventas{% endblock %}
+{% block contenido %}
+<h1>Reporte de ventas de productos</h1>
+<form method="get" class="fila barra-filtros">
+  <label>Desde <input type="date" name="desde" value="{{ desde.isoformat() }}"></label>
+  <label>Hasta <input type="date" name="hasta" value="{{ hasta.isoformat() }}"></label>
+  <label>Línea base (CLP) <input type="number" name="base" min="1" value="{{ base or '' }}" placeholder="Ventas de referencia"></label>
+  <button class="btn" type="submit">Calcular</button>
+</form>
+<section class="grilla cuatro">
+  <article class="tarjeta kpi"><span>Ventas totales</span><strong>{{ v.total|clp }}</strong><small>{{ v.n }} pedidos</small></article>
+  <article class="tarjeta kpi"><span>Fuera del horario del local</span><strong>{{ v.total_fuera|clp }}</strong><small>{{ v.n_fuera }} pedidos</small></article>
+  <article class="tarjeta kpi"><span>En horario presencial</span><strong>{{ (v.total - v.total_fuera)|clp }}</strong><small>{{ v.n - v.n_fuera }} pedidos</small></article>
+  <article class="tarjeta kpi"><span>Variación vs. línea base</span><strong>{% if v.variacion is not none %}{{ v.variacion }}%{% else %}—{% endif %}</strong><small>meta del caso: +15 %</small></article>
+</section>
+<h2>Productos más vendidos</h2>
+<table class="tabla">
+  <thead><tr><th>Producto</th><th>Unidades</th><th>Monto</th></tr></thead>
+  <tbody>{% for t in v.top %}<tr><td>{{ t.nombre }}</td><td>{{ t.unidades }}</td><td>{{ t.monto|clp }}</td></tr>
+  {% else %}<tr><td colspan="3">Sin ventas en el período.</td></tr>{% endfor %}</tbody>
+</table>
+{% endblock %}

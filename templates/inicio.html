@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block contenido %}
+<section class="hero">
+  <h1>Reserve su hora o compre sus productos, a cualquier hora</h1>
+  <p>Agenda sin cruces de horario y tienda en línea de RG Beauty Spa, Copiapó.</p>
+  <p><a class="btn" href="{{ url_for('public.reservar') }}">Reservar una hora</a>
+     <a class="btn btn-claro" href="{{ url_for('public.tienda') }}">Ver la tienda</a></p>
+</section>
+<section class="grilla tres">
+  <article class="tarjeta"><h2>Sin esperas</h2><p>Elija servicio, profesional y horario. El sistema muestra solo los horarios libres.</p></article>
+  <article class="tarjeta"><h2>Tienda abierta 24 horas</h2><p>Compre productos cosméticos también fuera del horario del local.</p></article>
+  <article class="tarjeta"><h2>Promociones</h2><p>Descuentos en los horarios de menor afluencia, visibles al reservar.</p></article>
+</section>
+{% endblock %}

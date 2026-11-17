@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block titulo %}Auditoría{% endblock %}
+{% block contenido %}
+<h1>Registro de auditoría</h1>
+<table class="tabla">
+  <thead><tr><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Detalle</th><th>IP</th></tr></thead>
+  <tbody>{% for a in filas %}
+  <tr><td>{{ a.creado_en|fecha_cl }} {{ a.creado_en|hora_cl }}</td><td>{{ a.email or '—' }}</td><td>{{ a.accion }}</td><td>{{ a.detalle }}</td><td>{{ a.ip }}</td></tr>
+  {% else %}<tr><td colspan="5">Sin registros.</td></tr>{% endfor %}</tbody>
+</table>
+{% endblock %}

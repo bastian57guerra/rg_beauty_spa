@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block titulo %}Servicios{% endblock %}
+{% block contenido %}
+<h1>Servicios</h1>
+<p><a class="btn" href="{{ url_for('panel.servicio_nuevo') }}">+ Nuevo servicio</a></p>
+<table class="tabla">
+  <thead><tr><th>Servicio</th><th>Duración</th><th>Precio</th><th>Estado</th><th></th></tr></thead>
+  <tbody>{% for s in filas %}
+  <tr><td>{{ s.nombre }}</td><td>{{ s.duracion_min }} min</td><td>{{ s.precio|clp }}</td><td>{{ 'Activo' if s.activo else 'Inactivo' }}</td>
+      <td><a class="btn btn-claro" href="{{ url_for('panel.servicio_editar', sid=s.id) }}">Editar</a></td></tr>
+  {% endfor %}</tbody>
+</table>
+{% endblock %}

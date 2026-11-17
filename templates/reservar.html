@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% from "_macros.html" import horarios_post %}
+{% block titulo %}Reservar hora{% endblock %}
+{% block contenido %}
+<h1>Reservar una hora</h1>
+<section class="tarjeta">
+  <h2>1. Elija el servicio</h2>
+  <form method="get" class="fila">
+    <select name="servicio" required aria-label="Servicio">
+      <option value="">Seleccione…</option>
+      {% for s in servicios %}
+      <option value="{{ s.id }}" {% if servicio and servicio.id == s.id %}selected{% endif %}>{{ s.nombre }} · {{ s.duracion_min }} min · {{ s.precio|clp }}</option>
+      {% endfor %}
+    </select>
+    <button class="btn" type="submit">Continuar</button>
+  </form>
+</section>
+{% if servicio %}
+<section class="tarjeta">
+  <h2>2. Profesional y fecha</h2>
+  <form method="get" class="fila">
+    <input type="hidden" name="servicio" value="{{ servicio.id }}">
+    <select name="profesional" required aria-label="Profesional">
+      <option value="">Profesional…</option>
+      {% for p in profesionales %}<option value="{{ p.id }}" {% if prof_id == p.id %}selected{% endif %}>{{ p.nombre }}</option>{% endfor %}
+    </select>
+    <input type="date" name="fecha" required min="{{ min_fecha }}" max="{{ max_fecha }}" value="{{ dia.isoformat() if dia else '' }}" aria-label="Fecha">
+    <button class="btn" type="submit">Ver horarios</button>
+  </form>
+</section>
+{% endif %}
+{% if horarios is not none %}
+<section class="tarjeta">
+  <h2>3. Elija un horario · {{ dia|string|fecha_cl }}</h2>
+  {% if horarios %}
+  <div class="slots">
+    {% for h in horarios %}
+      <a class="btn btn-claro" href="{{ url_for('public.reservar_datos', servicio=servicio.id, profesional=prof_id, inicio=h.inicio) }}">{{ h.hora }}{% if h.promo %}<small> · {{ h.precio|clp }}</small>{% endif %}</a>
+    {% endfor %}
+  </div>
+  <p class="ayuda">Los horarios con precio indicado tienen promoción.</p>
+  {% else %}
+  <p>No quedan horarios libres ese día. Pruebe con otra fecha u otro profesional.</p>
+  {% endif %}
+</section>
+{% endif %}
+{% endblock %}

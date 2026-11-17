@@ -1,0 +1,52 @@
+:root{--ciruela:#4a2340;--rosa:#c24d78;--rosa-claro:#f6e4ea;--fondo:#faf6f4;--texto:#2b2227;--gris:#6e6268;--borde:#e6dadf;--ok:#2f7a4f;--error:#b3261e}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--fondo);color:var(--texto);line-height:1.5}
+a{color:var(--rosa)}
+.barra{background:var(--ciruela);color:#fff}
+.barra-in{max-width:1100px;margin:0 auto;padding:.7rem 1rem;display:flex;flex-wrap:wrap;gap:.6rem 1.4rem;align-items:center;justify-content:space-between}
+.marca{color:#fff;font-weight:700;font-size:1.2rem;text-decoration:none;letter-spacing:.3px}
+nav{display:flex;flex-wrap:wrap;gap:.3rem 1rem;align-items:center}
+nav a{color:#f3dbe5;text-decoration:none;font-size:.95rem}nav a:hover{color:#fff;text-decoration:underline}
+.en-linea{display:inline}
+.enlace{background:none;border:0;color:var(--rosa);cursor:pointer;font:inherit;padding:0;text-decoration:underline}
+nav .enlace{color:#f3dbe5;text-decoration:none;font-size:.95rem}
+.contenedor{max-width:1100px;margin:0 auto;padding:1.4rem 1rem 3rem}
+h1{font-size:1.7rem;color:var(--ciruela);margin:.2rem 0 1rem}h2{font-size:1.2rem;color:var(--ciruela)}
+.hero{background:linear-gradient(135deg,var(--rosa-claro),#fff);border:1px solid var(--borde);border-radius:14px;padding:2rem 1.5rem;margin-bottom:1.4rem}
+.hero h1{font-size:2rem}
+.tarjeta{background:#fff;border:1px solid var(--borde);border-radius:12px;padding:1.1rem 1.2rem;margin-bottom:1rem}
+.tarjeta h2{margin-top:0}
+.centro{text-align:center}
+.grilla{display:grid;gap:1rem}.tres{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}.cuatro{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.dos{grid-template-columns:repeat(auto-fit,minmax(240px,1fr));align-items:end}
+.fila{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.barra-filtros{margin-bottom:1rem}
+.btn{display:inline-block;background:var(--rosa);color:#fff;border:1px solid var(--rosa);border-radius:8px;padding:.5rem .95rem;font:inherit;font-size:.95rem;cursor:pointer;text-decoration:none}
+.btn:hover{filter:brightness(.93)}
+.btn-claro{background:#fff;color:var(--ciruela);border-color:var(--borde)}
+.btn-peligro{background:#fff;color:var(--error);border-color:#e5b9b5}
+.btn small{opacity:.85}
+.formulario{max-width:640px}.angosto{max-width:420px;margin:0 auto}
+label{display:block;margin:.6rem 0;font-weight:600;font-size:.95rem}
+input,select,textarea{display:block;width:100%;margin-top:.25rem;padding:.55rem .65rem;border:1px solid #cdbfc6;border-radius:8px;font:inherit;background:#fff}
+.fila input,.fila select{width:auto;margin-top:0}.corto{width:5rem!important}
+input:focus,select:focus,textarea:focus,.btn:focus,button:focus{outline:3px solid #f0b3c8;outline-offset:1px}
+label.check{display:flex;gap:.5rem;align-items:flex-start;font-weight:400}label.check input{width:auto;margin-top:.25rem}
+fieldset{border:1px solid var(--borde);border-radius:8px;margin:.8rem 0}legend{font-weight:600}
+.ayuda{color:var(--gris);font-size:.88rem;margin:.2rem 0 .6rem}
+.mensaje{padding:.7rem 1rem;border-radius:8px;margin-bottom:1rem;border:1px solid}
+.mensaje.ok{background:#e8f5ec;border-color:#b6dcc3;color:#1f5a38}
+.mensaje.error{background:#fdecea;border-color:#f1b8b3;color:var(--error)}
+.mensaje.aviso{background:#fff6e0;border-color:#ecd28a;color:#6b4f00}
+.tabla{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--borde);border-radius:10px;overflow:hidden;font-size:.93rem}
+.tabla th,.tabla td{padding:.55rem .7rem;border-bottom:1px solid var(--borde);text-align:left;vertical-align:top}
+.tabla thead th{background:var(--rosa-claro);color:var(--ciruela)}
+.acciones{display:flex;flex-wrap:wrap;gap:.4rem}.acciones form{display:inline}
+.slots{display:flex;flex-wrap:wrap;gap:.5rem}.slot{margin:0}
+.estado{padding:.15rem .55rem;border-radius:999px;font-size:.82rem;background:#eee}
+.e-confirmada{background:#e4eefb;color:#1b4a8a}.e-atendida{background:#e8f5ec;color:#1f5a38}.e-cancelada{background:#fdecea;color:var(--error)}.e-noasistio{background:#fff1d6;color:#7a5200}
+.kpi span{display:block;color:var(--gris);font-size:.9rem}.kpi strong{display:block;font-size:1.8rem;color:var(--ciruela)}.kpi small{color:var(--gris)}
+.precio{font-size:1.2rem;font-weight:700;color:var(--ciruela)}.agotado{color:var(--error);font-weight:600}
+.codigo{font-family:ui-monospace,Consolas,monospace;font-size:1.15rem;background:var(--rosa-claro);padding:.15rem .5rem;border-radius:6px}
+progress{width:100%;height:.9rem}
+.pie{text-align:center;color:var(--gris);font-size:.82rem;padding:1.5rem 1rem;border-top:1px solid var(--borde)}
+@media (max-width:640px){.tabla{display:block;overflow-x:auto}.hero h1{font-size:1.5rem}}

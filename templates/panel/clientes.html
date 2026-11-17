@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block titulo %}Clientas{% endblock %}
+{% block contenido %}
+<h1>Clientas</h1>
+<form method="get" class="fila barra-filtros">
+  <input type="search" name="q" value="{{ q }}" placeholder="Buscar por nombre o teléfono" maxlength="60" aria-label="Buscar">
+  <button class="btn" type="submit">Buscar</button>
+  <a class="btn" href="{{ url_for('panel.cliente_nuevo') }}">+ Nueva clienta</a>
+</form>
+<table class="tabla">
+  <thead><tr><th>Nombre</th><th>Teléfono</th><th>Correo</th><th>Consentimiento</th><th></th></tr></thead>
+  <tbody>
+  {% for c in filas %}
+  <tr><td>{{ c.nombre }}</td><td>{{ c.telefono }}</td><td>{{ c.email or '—' }}</td><td>{{ 'Sí' if c.consentimiento else 'No' }}</td>
+    <td class="acciones">{% if not c.anonimizado %}
+      <a class="btn btn-claro" href="{{ url_for('panel.cliente_editar', cid=c.id) }}">Editar</a>
+      {% if g.usuario.rol == 'administrador' %}
+      <form method="post" action="{{ url_for('panel.cliente_anonimizar', cid=c.id) }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}"><button class="btn btn-peligro" type="submit">Anonimizar</button></form>
+      {% endif %}{% endif %}</td></tr>
+  {% else %}<tr><td colspan="5">No se encontraron clientas.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}RG Beauty Spa{% endblock %} · RG Beauty Spa</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="barra">
+  <div class="barra-in">
+    <a class="marca" href="{{ url_for('public.inicio') }}">RG Beauty Spa</a>
+    <nav aria-label="Principal">
+      {% if g.usuario %}
+        <a href="{{ url_for('panel.agenda') }}">Agenda</a>
+        {% if g.usuario.rol in ('administrador', 'recepcionista') %}
+          <a href="{{ url_for('panel.clientes') }}">Clientas</a>
+          <a href="{{ url_for('panel.avisos_vista') }}">Avisos</a>
+        {% endif %}
+        {% if g.usuario.rol == 'administrador' %}
+          <a href="{{ url_for('panel.servicios') }}">Servicios</a>
+          <a href="{{ url_for('panel.profesionales') }}">Profesionales</a>
+          <a href="{{ url_for('panel.productos') }}">Productos</a>
+          <a href="{{ url_for('panel.promociones') }}">Promociones</a>
+          <a href="{{ url_for('panel.indicadores_vista') }}">Indicadores</a>
+          <a href="{{ url_for('panel.ventas_vista') }}">Ventas</a>
+          <a href="{{ url_for('panel.auditoria') }}">Auditoría</a>
+        {% endif %}
+        <a href="{{ url_for('auth.cambiar_clave') }}">Mi clave</a>
+        <form method="post" action="{{ url_for('auth.logout') }}" class="en-linea">
+          <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+          <button class="enlace" type="submit">Salir ({{ g.usuario.nombre.split()[0] }})</button>
+        </form>
+      {% else %}
+        <a href="{{ url_for('public.reservar') }}">Reservar hora</a>
+        <a href="{{ url_for('public.tienda') }}">Tienda</a>
+        <a href="{{ url_for('public.carrito') }}">Carrito</a>
+        <a href="{{ url_for('auth.login') }}">Personal</a>
+      {% endif %}
+    </nav>
+  </div>
+</header>
+<main class="contenedor">
+  {% with mensajes = get_flashed_messages(with_categories=true) %}
+    {% for categoria, mensaje in mensajes %}
+      <div class="mensaje {{ categoria }}" role="status">{{ mensaje }}</div>
+    {% endfor %}
+  {% endwith %}
+  {% block contenido %}{% endblock %}
+</main>
+<footer class="pie">
+  Prototipo académico · Ingeniería de Software · INACAP Sede Copiapó · Los datos personales se usan solo para gestionar reservas y compras.
+</footer>
+</body>
+</html>

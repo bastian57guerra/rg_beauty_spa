@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block titulo %}Pago{% endblock %}
+{% block contenido %}
+<section class="tarjeta formulario">
+  <h1>Finalizar compra · {{ total|clp }}</h1>
+  <ul>{% for l in lineas %}<li>{{ l.cantidad }} × {{ l.p.nombre }}</li>{% endfor %}</ul>
+  <form method="post">
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <label>Nombre completo<input name="nombre" required maxlength="80" autocomplete="name"></label>
+    <label>Teléfono celular<input type="tel" name="telefono" required maxlength="20" placeholder="+56 9 1234 5678" autocomplete="tel"></label>
+    <label>Correo (opcional)<input type="email" name="email" maxlength="120" autocomplete="email"></label>
+    <label>Medio de pago
+      <select name="medio_pago" required>{% for m in medios %}<option>{{ m }}</option>{% endfor %}</select></label>
+    <p class="ayuda">Pasarela de prueba: el sistema no solicita ni guarda datos de tarjetas.</p>
+    {% if demo %}<label class="check"><input type="checkbox" name="simular_rechazo"> Simular pago rechazado (solo demostración)</label>{% endif %}
+    <label class="check"><input type="checkbox" name="consentimiento" required> Autorizo el uso de mis datos solo para gestionar esta compra.</label>
+    <button class="btn" type="submit">Pagar</button>
+  </form>
+</section>
+{% endblock %}

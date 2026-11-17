@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block titulo %}Promociones{% endblock %}
+{% block contenido %}
+<h1>Promociones para horarios de baja demanda</h1>
+<table class="tabla">
+  <thead><tr><th>Promoción</th><th>Descuento</th><th>Días y franja</th><th>Vigencia</th><th>Estado</th><th></th></tr></thead>
+  <tbody>{% for p in filas %}
+  <tr><td>{{ p.nombre }}</td><td>{{ p.descuento_pct }}%</td>
+      <td>{% for d in p.dias.split(',') %}{{ dias[d] }}{{ ', ' if not loop.last }}{% endfor %} · {{ p.hora_desde }}–{{ p.hora_hasta }}</td>
+      <td>{{ p.fecha_desde|fecha_cl }} al {{ p.fecha_hasta|fecha_cl }}</td><td>{{ 'Activa' if p.activa else 'Pausada' }}</td>
+      <td><form method="post" action="{{ url_for('panel.promocion_alternar', pid=p.id) }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}"><button class="btn btn-claro" type="submit">{{ 'Pausar' if p.activa else 'Activar' }}</button></form></td></tr>
+  {% else %}<tr><td colspan="6">Aún no hay promociones.</td></tr>{% endfor %}</tbody>
+</table>
+<section class="tarjeta formulario">
+  <h2>Nueva promoción</h2>
+  <form method="post" novalidate>
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    {% for c in campos %}
+      {% if c.tipo == 'multicheck' %}
+        <fieldset><legend>{{ c.etiqueta }}</legend>{% for v, e in c.opciones %}<label class="check"><input type="checkbox" name="{{ c.nombre }}" value="{{ v }}" {% if v in c.valor %}checked{% endif %}> {{ e }}</label>{% endfor %}</fieldset>
+      {% else %}
+        <label>{{ c.etiqueta }}<input type="{{ c.tipo or 'text' }}" name="{{ c.nombre }}" value="{{ c.valor }}" required maxlength="80"></label>
+        {% if c.ayuda %}<p class="ayuda">{{ c.ayuda }}</p>{% endif %}
+      {% endif %}
+    {% endfor %}
+    <button class="btn" type="submit">Crear promoción</button>
+  </form>
+</section>
+{% endblock %}

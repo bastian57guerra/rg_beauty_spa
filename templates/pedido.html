@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block titulo %}Compra confirmada{% endblock %}
+{% block contenido %}
+<section class="tarjeta">
+  <h1>¡Gracias por su compra!</h1>
+  <p>Pedido <strong class="codigo">{{ p.codigo }}</strong> · {{ p.creado_en|fecha_cl }} {{ p.creado_en|hora_cl }} · pago {{ p.estado|lower }} ({{ p.pago_ref }})</p>
+  <table class="tabla">
+    <thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th></tr></thead>
+    <tbody>{% for d in detalle %}<tr><td>{{ d.nombre }}</td><td>{{ d.cantidad }}</td><td>{{ (d.cantidad * d.precio_unit)|clp }}</td></tr>{% endfor %}</tbody>
+    <tfoot><tr><th colspan="2">Total</th><th>{{ p.total|clp }}</th></tr></tfoot>
+  </table>
+</section>
+{% endblock %}

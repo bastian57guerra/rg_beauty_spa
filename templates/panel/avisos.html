@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block titulo %}Avisos{% endblock %}
+{% block contenido %}
+<h1>Confirmaciones y recordatorios</h1>
+<form method="post" action="{{ url_for('panel.avisos_recordatorios') }}">
+  <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  <button class="btn" type="submit">Generar recordatorios de mañana</button>
+</form>
+<p class="ayuda">En el prototipo el envío es simulado: se guarda el mensaje que se enviaría por correo o SMS.</p>
+<table class="tabla">
+  <thead><tr><th>Fecha</th><th>Tipo</th><th>Canal</th><th>Destino</th><th>Mensaje</th><th>Estado</th></tr></thead>
+  <tbody>{% for a in filas %}
+  <tr><td>{{ a.creado_en|fecha_cl }} {{ a.creado_en|hora_cl }}</td><td>{{ a.tipo }}</td><td>{{ a.canal }}</td><td>{{ a.destino }}</td><td>{{ a.mensaje }}</td><td>{{ a.estado }}</td></tr>
+  {% else %}<tr><td colspan="6">Aún no hay avisos.</td></tr>{% endfor %}</tbody>
+</table>
+{% endblock %}

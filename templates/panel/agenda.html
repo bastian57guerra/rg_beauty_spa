@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block titulo %}Agenda{% endblock %}
+{% block contenido %}
+<h1>Agenda · {{ dia.strftime('%d-%m-%Y') }}</h1>
+<form method="get" class="fila barra-filtros">
+  <a class="btn btn-claro" href="{{ url_for('panel.agenda', fecha=ayer, profesional=prof_id or '') }}">← Anterior</a>
+  <input type="date" name="fecha" value="{{ dia.isoformat() }}" aria-label="Fecha">
+  {% if g.usuario.rol != 'profesional' %}
+  <select name="profesional" aria-label="Profesional">
+    <option value="">Todos los profesionales</option>
+    {% for p in profesionales %}<option value="{{ p.id }}" {% if prof_id == p.id %}selected{% endif %}>{{ p.nombre }}</option>{% endfor %}
+  </select>
+  {% endif %}
+  <button class="btn" type="submit">Ver</button>
+  <a class="btn btn-claro" href="{{ url_for('panel.agenda', fecha=manana, profesional=prof_id or '') }}">Siguiente →</a>
+  {% if g.usuario.rol in ('administrador', 'recepcionista') %}<a class="btn" href="{{ url_for('panel.reserva_nueva') }}">+ Nueva reserva</a>{% endif %}
+</form>
+<table class="tabla">
+  <thead><tr><th>Hora</th><th>Clienta</th><th>Servicio</th><th>Profesional</th><th>Estado</th><th>Acciones</th></tr></thead>
+  <tbody>
+  {% for r in filas %}
+  <tr>
+    <td>{{ r.inicio|hora_cl }}–{{ r.fin|hora_cl }}</td>
+    <td>{{ r.cliente }}<br><small>{{ r.telefono }}</small></td>
+    <td>{{ r.servicio }}</td><td>{{ r.profesional }}</td>
+    <td><span class="estado e-{{ r.estado|replace(' ', '')|replace('ó', 'o')|lower }}">{{ r.estado }}</span></td>
+    <td class="acciones">
+      {% if r.estado == 'Confirmada' %}
+        {% if g.usuario.rol in ('administrador', 'recepcionista') %}
+          <a class="btn btn-claro" href="{{ url_for('panel.reserva_reprogramar', rid=r.id) }}">Reprogramar</a>
+          <form method="post" action="{{ url_for('panel.reserva_cancelar', rid=r.id) }}">
+            <input type="hidden" name="_csrf" value="{{ csrf_token() }}"><button class="btn btn-peligro" type="submit">Cancelar</button></form>
+        {% endif %}
+        {% if g.usuario.rol in ('administrador', 'profesional') and r.inicio <= ahora %}
+          <form method="post" action="{{ url_for('panel.reserva_atencion', rid=r.id) }}">
+            <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+            <button class="btn" name="estado" value="Atendida" type="submit">Atendida</button>
+            <button class="btn btn-claro" name="estado" value="No asistió" type="submit">No asistió</button></form>
+        {% endif %}
+      {% endif %}
+    </td>
+  </tr>
+  {% else %}
+  <tr><td colspan="6">No hay reservas para este día.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

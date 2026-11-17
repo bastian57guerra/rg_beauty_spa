@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block titulo %}Reserva confirmada{% endblock %}
+{% block contenido %}
+<section class="tarjeta centro">
+  <h1>¡Reserva confirmada!</h1>
+  <p>{{ r.cliente.split()[0] }}, la esperamos el <strong>{{ r.inicio|fecha_cl }}</strong> a las <strong>{{ r.inicio|hora_cl }}</strong>.</p>
+  <p>{{ r.servicio }} con {{ r.profesional }} · {{ r.precio_final|clp }}</p>
+  <p class="codigo">Código: {{ r.codigo }}</p>
+  <p class="ayuda">Guarde este código. Para cambiar o cancelar su hora, comuníquese con el salón.</p>
+</section>
+{% endblock %}

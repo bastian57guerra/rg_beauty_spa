@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block titulo %}Panel{% endblock %}
+{% block contenido %}
+<h1>Hola, {{ g.usuario.nombre.split()[0] }}</h1>
+<p>Perfil: <strong>{{ g.usuario.rol }}</strong>. Hoy hay <strong>{{ reservas_hoy }}</strong> reservas activas{% if g.usuario.rol == 'profesional' %} en su agenda{% endif %}.</p>
+<section class="grilla tres">
+  <article class="tarjeta"><h2>Agenda</h2><p>Reservas del día.</p><a class="btn" href="{{ url_for('panel.agenda') }}">Abrir agenda</a></article>
+  {% if g.usuario.rol in ('administrador', 'recepcionista') %}
+  <article class="tarjeta"><h2>Nueva reserva</h2><p>Agendar una hora en nombre de una clienta.</p><a class="btn" href="{{ url_for('panel.reserva_nueva') }}">Reservar</a></article>
+  <article class="tarjeta"><h2>Clientas</h2><p>Buscar, registrar y editar.</p><a class="btn" href="{{ url_for('panel.clientes') }}">Ver clientas</a></article>
+  {% endif %}
+  {% if g.usuario.rol == 'administrador' %}
+  <article class="tarjeta"><h2>Indicadores</h2><p>Ocupación, cancelaciones y tiempos muertos.</p><a class="btn" href="{{ url_for('panel.indicadores_vista') }}">Ver indicadores</a></article>
+  <article class="tarjeta"><h2>Ventas</h2><p>Reporte de la tienda en línea.</p><a class="btn" href="{{ url_for('panel.ventas_vista') }}">Ver ventas</a></article>
+  {% endif %}
+</section>
+{% endblock %}

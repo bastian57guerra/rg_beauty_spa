@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block titulo %}Indicadores{% endblock %}
+{% block contenido %}
+<h1>Indicadores de la agenda</h1>
+<form method="get" class="fila barra-filtros">
+  <label>Desde <input type="date" name="desde" value="{{ desde.isoformat() }}"></label>
+  <label>Hasta <input type="date" name="hasta" value="{{ hasta.isoformat() }}"></label>
+  <button class="btn" type="submit">Calcular</button>
+</form>
+<section class="grilla cuatro">
+  <article class="tarjeta kpi"><span>Ocupación</span><strong>{{ ind.pct_ocupacion }}%</strong><small>{{ ind.ocupados_min }} de {{ ind.disponibles_min }} min</small></article>
+  <article class="tarjeta kpi"><span>Cancelaciones</span><strong>{{ ind.pct_cancelacion }}%</strong><small>{{ ind.canceladas }} de {{ ind.total_reservas }} reservas</small></article>
+  <article class="tarjeta kpi"><span>Tiempos muertos</span><strong>{{ ind.tiempo_muerto_min }} min</strong><small>entre atenciones del mismo día</small></article>
+  <article class="tarjeta kpi"><span>No asistió</span><strong>{{ ind.no_asistio }}</strong><small>reservas sin asistencia</small></article>
+</section>
+<h2>Ocupación por día de la semana</h2>
+<table class="tabla">
+  <thead><tr><th>Día</th><th>Ocupación</th><th></th></tr></thead>
+  <tbody>{% for d in ind.por_dia %}
+  <tr><td>{{ d.dia }}</td><td>{{ d.pct }}%</td><td><progress max="100" value="{{ d.pct }}"></progress></td></tr>
+  {% endfor %}</tbody>
+</table>
+<p class="ayuda">Los días con menor ocupación son los candidatos para activar promociones.</p>
+{% endblock %}

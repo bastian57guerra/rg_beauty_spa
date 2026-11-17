@@ -1,0 +1,12 @@
+{% macro horarios_post(horarios, destino, ocultos) %}
+<div class="slots">
+  {% for h in horarios %}
+  <form method="post" action="{{ destino }}" class="slot">
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    {% for k, v in ocultos.items() %}<input type="hidden" name="{{ k }}" value="{{ v }}">{% endfor %}
+    <input type="hidden" name="inicio" value="{{ h.inicio }}">
+    <button class="btn btn-claro" type="submit">{{ h.hora }}{% if h.promo %}<small> · {{ h.precio|clp }}</small>{% endif %}</button>
+  </form>
+  {% endfor %}
+</div>
+{% endmacro %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block titulo %}Carrito{% endblock %}
+{% block contenido %}
+<h1>Su carrito</h1>
+{% if lineas %}
+<table class="tabla">
+  <thead><tr><th>Producto</th><th>Cantidad</th><th>Subtotal</th><th></th></tr></thead>
+  <tbody>
+  {% for l in lineas %}
+  <tr><td>{{ l.p.nombre }}</td><td>{{ l.cantidad }}</td><td>{{ l.subtotal|clp }}</td>
+      <td><form method="post" action="{{ url_for('public.carrito_quitar') }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}"><input type="hidden" name="producto" value="{{ l.p.id }}">
+        <button class="enlace" type="submit">Quitar</button></form></td></tr>
+  {% endfor %}
+  </tbody>
+  <tfoot><tr><th colspan="2">Total</th><th colspan="2">{{ total|clp }}</th></tr></tfoot>
+</table>
+<p><a class="btn" href="{{ url_for('public.checkout') }}">Continuar con la compra</a>
+   <a class="btn btn-claro" href="{{ url_for('public.tienda') }}">Seguir comprando</a></p>
+{% else %}
+<p>Su carrito está vacío. <a href="{{ url_for('public.tienda') }}">Ir a la tienda</a></p>
+{% endif %}
+{% endblock %}

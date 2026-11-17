@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block titulo %}Tienda{% endblock %}
+{% block contenido %}
+<h1>Tienda en línea</h1>
+<section class="grilla tres">
+  {% for p in productos %}
+  <article class="tarjeta">
+    <h2>{{ p.nombre }}</h2>
+    <p>{{ p.descripcion or '' }}</p>
+    <p class="precio">{{ p.precio|clp }}</p>
+    {% if p.stock > 0 %}
+    <form method="post" action="{{ url_for('public.carrito_agregar') }}" class="fila">
+      <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+      <input type="hidden" name="producto" value="{{ p.id }}">
+      <input type="number" name="cantidad" value="1" min="1" max="{{ [p.stock, 10]|min }}" aria-label="Cantidad" class="corto">
+      <button class="btn" type="submit">Agregar</button>
+    </form>
+    <p class="ayuda">{{ p.stock }} disponibles</p>
+    {% else %}
+    <p class="agotado">Agotado</p>
+    {% endif %}
+  </article>
+  {% else %}
+  <p>Aún no hay productos publicados.</p>
+  {% endfor %}
+</section>
+{% endblock %}

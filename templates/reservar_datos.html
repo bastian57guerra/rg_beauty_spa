@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block titulo %}Sus datos{% endblock %}
+{% block contenido %}
+<section class="tarjeta formulario">
+  <h1>Confirme su reserva</h1>
+  <p><strong>{{ servicio.nombre }}</strong> con {{ prof.nombre }}<br>
+     {{ inicio.strftime('%d-%m-%Y') }} a las {{ inicio.strftime('%H:%M') }} · {{ servicio.duracion_min }} min ·
+     <strong>{{ elegido.precio|clp }}</strong>{% if elegido.promo %} ({{ elegido.promo }}){% endif %}</p>
+  <form method="post" action="{{ url_for('public.reservar_confirmar') }}">
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <input type="hidden" name="servicio" value="{{ servicio.id }}">
+    <input type="hidden" name="profesional" value="{{ prof.id }}">
+    <input type="hidden" name="inicio" value="{{ elegido.inicio }}">
+    <label>Nombre completo<input name="nombre" required maxlength="80" autocomplete="name"></label>
+    <label>Teléfono celular<input type="tel" name="telefono" required maxlength="20" placeholder="+56 9 1234 5678" autocomplete="tel"></label>
+    <label>Correo (opcional)<input type="email" name="email" maxlength="120" autocomplete="email"></label>
+    <label class="check"><input type="checkbox" name="consentimiento" required> Autorizo que RG Beauty Spa use mis datos solo para gestionar mi reserva y enviarme avisos.</label>
+    <button class="btn" type="submit">Confirmar reserva</button>
+  </form>
+</section>
+{% endblock %}

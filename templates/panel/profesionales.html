@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block titulo %}Profesionales{% endblock %}
+{% block contenido %}
+<h1>Profesionales</h1>
+<p><a class="btn" href="{{ url_for('panel.profesional_nuevo') }}">+ Nuevo profesional</a></p>
+<table class="tabla">
+  <thead><tr><th>Nombre</th><th>Servicios</th><th>Estado</th><th></th></tr></thead>
+  <tbody>{% for p in filas %}
+  <tr><td>{{ p.nombre }}</td><td>{{ p.servicios }}</td><td>{{ 'Activo' if p.activo else 'Inactivo' }}</td>
+      <td><a class="btn btn-claro" href="{{ url_for('panel.profesional_editar', pid=p.id) }}">Editar</a></td></tr>
+  {% endfor %}</tbody>
+</table>
+{% endblock %}

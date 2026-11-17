@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% from "_macros.html" import horarios_post %}
+{% block titulo %}Nueva reserva{% endblock %}
+{% block contenido %}
+<h1>Nueva reserva</h1>
+<section class="tarjeta">
+  <form method="get" class="grilla dos">
+    <label>Clienta
+      <select name="cliente" required><option value="">Seleccione…</option>
+        {% for c in clientes %}<option value="{{ c.id }}" {% if cid == c.id %}selected{% endif %}>{{ c.nombre }} · {{ c.telefono }}</option>{% endfor %}
+      </select></label>
+    <label>Servicio
+      <select name="servicio" required><option value="">Seleccione…</option>
+        {% for s in servicios %}<option value="{{ s.id }}" {% if sid == s.id %}selected{% endif %}>{{ s.nombre }}</option>{% endfor %}
+      </select></label>
+    <label>Profesional
+      <select name="profesional" required><option value="">Seleccione…</option>
+        {% for p in profesionales %}<option value="{{ p.id }}" {% if pid == p.id %}selected{% endif %}>{{ p.nombre }}</option>{% endfor %}
+      </select></label>
+    <label>Fecha<input type="date" name="fecha" required min="{{ hoy }}" value="{{ dia.isoformat() if dia else '' }}"></label>
+    <div><button class="btn" type="submit">Ver horarios</button></div>
+  </form>
+</section>
+{% if horarios is not none %}
+<section class="tarjeta">
+  <h2>Horarios libres · {{ dia.strftime('%d-%m-%Y') }}</h2>
+  {% if horarios %}
+    {{ horarios_post(horarios, url_for('panel.reserva_nueva'), {'cliente': cid, 'servicio': sid, 'profesional': pid}) }}
+  {% else %}<p>No hay horarios libres para esa combinación.</p>{% endif %}
+</section>
+{% endif %}
+{% endblock %}

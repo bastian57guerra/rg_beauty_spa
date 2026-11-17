@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block titulo %}{{ titulo }}{% endblock %}
+{% block contenido %}
+<section class="tarjeta formulario">
+  <h1>{{ titulo }}</h1>
+  <form method="post" novalidate>
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    {% for c in campos %}
+      {% set tipo = c.tipo or 'text' %}
+      {% if tipo == 'checkbox' %}
+        <label class="check"><input type="checkbox" name="{{ c.nombre }}" {% if c.valor in (1, '1', 'on', True) %}checked{% endif %}> {{ c.etiqueta }}</label>
+      {% elif tipo == 'multicheck' %}
+        <fieldset><legend>{{ c.etiqueta }}</legend>
+          {% for v, e in c.opciones %}<label class="check"><input type="checkbox" name="{{ c.nombre }}" value="{{ v }}" {% if v in c.valor %}checked{% endif %}> {{ e }}</label>{% endfor %}
+        </fieldset>
+      {% elif tipo == 'textarea' %}
+        <label>{{ c.etiqueta }}<textarea name="{{ c.nombre }}" rows="3" maxlength="300">{{ c.valor or '' }}</textarea></label>
+      {% else %}
+        <label>{{ c.etiqueta }}
+          <input type="{{ tipo }}" name="{{ c.nombre }}" value="{{ '' if tipo == 'password' else (c.valor if c.valor is not none else '') }}"
+                 {% if c.requerido is not defined or c.requerido %}required{% endif %} maxlength="200" autocomplete="off">
+        </label>
+        {% if c.ayuda %}<p class="ayuda">{{ c.ayuda }}</p>{% endif %}
+      {% endif %}
+    {% endfor %}
+    <div class="fila">
+      <button class="btn" type="submit">{{ boton or 'Guardar' }}</button>
+      {% if volver %}<a class="btn btn-claro" href="{{ volver }}">Cancelar</a>{% endif %}
+    </div>
+  </form>
+</section>
+{% endblock %}
